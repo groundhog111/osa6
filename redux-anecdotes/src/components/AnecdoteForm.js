@@ -1,23 +1,42 @@
 import React from 'react';
+import {connect} from 'react-redux'
 import {addAnecdote} from '../reducers/anecdoteReducer'
+import {notificationChange} from '../reducers/notificationReducer'
 
 const AnecdoteForm = (props) => {
 
   const addAnecdoteHandler = (event) => {
     event.preventDefault()
-    props.store.dispatch(addAnecdote(event))
+    props.addAnecdote(event)
     event.target.anecdote.value = ''
-
+    props.notificationChange("You created new anecdote! Great!")
+    setTimeout(() => props.notificationChange(""),5000)
   }
   return (
     <div>
-      <h2>create new</h2>
       <form onSubmit = {addAnecdoteHandler}>
-        <div><input name = "anecdote" /></div>
+        <input name = "anecdote" />
         <button type = "submit" >create</button>
       </form>
     </div>
   )
 }
 
-export default AnecdoteForm
+const mapStateToProps = (state) => {
+  return {
+    anecdote: state.anecdote,
+    filter: state.filter,
+  }
+}
+
+const mapDispatchToProps = {
+  addAnecdote,
+  notificationChange
+}
+
+const ConnectedNotes = connect(
+  mapStateToProps,
+  mapDispatchToProps
+  )(AnecdoteForm)
+
+export default ConnectedNotes
